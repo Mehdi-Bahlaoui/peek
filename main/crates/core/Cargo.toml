@@ -1,0 +1,13 @@
+[package]
+name = "peek-core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "peek_core"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
+toml = "0.8"

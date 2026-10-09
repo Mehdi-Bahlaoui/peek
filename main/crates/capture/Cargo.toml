@@ -1,0 +1,15 @@
+[package]
+name = "peek-capture"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "peek_capture"
+path = "src/lib.rs"
+
+[dependencies]
+peek-core = { path = "../core" }
+ashpd = { version = "0.13", features = ["screencast"] }
+gstreamer = "0.25"
+gstreamer-app = "0.25"
+tokio = { version = "1", features = ["time"] }

@@ -1,0 +1,14 @@
+[package]
+name = "peek-encode"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "peek_encode"
+path = "src/lib.rs"
+
+[dependencies]
+peek-core = { path = "../core" }
+gifski = "1"
+imgref = "1"
+rgb = "0.8"

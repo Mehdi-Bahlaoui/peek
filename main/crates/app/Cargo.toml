@@ -1,0 +1,23 @@
+[package]
+name = "peek-app"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "peek_app"
+path = "src/lib.rs"
+
+[[bin]]
+name = "peek-rs"
+path = "src/main.rs"
+
+[dependencies]
+peek-core = { path = "../core" }
+peek-capture = { path = "../capture" }
+peek-encode = { path = "../encode" }
+peek-ui = { path = "../ui" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
+glib = "0.22"
+gtk4 = "0.11"
+directories = "6"
+chrono = "0.4"

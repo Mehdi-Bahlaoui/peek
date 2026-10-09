@@ -1,0 +1,13 @@
+[package]
+name = "peek-ui"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "peek_ui"
+path = "src/lib.rs"
+
+[dependencies]
+peek-core = { path = "../core" }
+gtk4 = "0.11"
+tokio = { version = "1", features = ["sync"] }
