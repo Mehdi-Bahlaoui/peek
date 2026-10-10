@@ -6,6 +6,8 @@
 
 pub mod window;
 
+use std::rc::Rc;
+
 use peek_core::{AppConfig, Fps};
 use tokio::sync::mpsc::UnboundedSender;
 
@@ -46,6 +48,16 @@ pub struct UiSnapshot {
 
 pub struct UiHandle {
     pub snapshot_tx: UnboundedSender<UiSnapshot>,
+    window: Rc<window::PeekWindow>,
+}
+
+impl UiHandle {
+    /// Bring the window to the front. Used when the launcher shortcut is
+    /// pressed while Peek is already running (GTK activates the existing
+    /// instance instead of starting a second one).
+    pub fn present(&self) {
+        self.window.present();
+    }
 }
 
 /// Build the window and wire snapshot delivery. Call from the GTK
@@ -55,15 +67,21 @@ pub fn build_ui(
     events: UnboundedSender<UiEvent>,
     initial: &AppConfig,
 ) -> UiHandle {
-    let peek = window::show_window(app, &events, initial);
+    let peek = Rc::new(window::show_window(app, &events, initial));
     // Snapshots arrive on Tokio channels but must be applied on the GTK
     // thread: pump them from a main-loop future (the Tokio receiver is
     // pollable by any executor).
     let (snapshot_tx, mut snapshot_rx) = tokio::sync::mpsc::unbounded_channel::<UiSnapshot>();
-    gtk4::glib::spawn_future_local(async move {
-        while let Some(snap) = snapshot_rx.recv().await {
-            peek.apply_snapshot(&snap);
-        }
-    });
-    UiHandle { snapshot_tx }
+    {
+        let peek = Rc::clone(&peek);
+        gtk4::glib::spawn_future_local(async move {
+            while let Some(snap) = snapshot_rx.recv().await {
+                peek.apply_snapshot(&snap);
+            }
+        });
+    }
+    UiHandle {
+        snapshot_tx,
+        window: peek,
+    }
 }

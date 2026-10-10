@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.peek"
+          path="/org/gnome/shell/extensions/peek/">
+    <key name="launch" type="as">
+      <default>['&lt;Control&gt;&lt;Shift&gt;p']</default>
+      <summary>Launch shortcut</summary>
+      <description>
+        Keyboard shortcut that launches the Peek GIF recorder. Defaults
+        to Ctrl+Shift+P. Change it with e.g.:
+        dconf write /org/gnome/shell/extensions/peek/launch "['&lt;Control&gt;&lt;Shift&gt;o']"
+      </description>
+    </key>
+    <key name="binary" type="s">
+      <default>''</default>
+      <summary>Peek binary path</summary>
+      <description>
+        Absolute path to the peek-rs binary. Empty means auto-detect:
+        ~/.local/bin/peek-rs, /usr/local/bin/peek-rs, then PATH.
+      </description>
+    </key>
+  </schema>
+</schemalist>

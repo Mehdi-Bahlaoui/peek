@@ -4,6 +4,9 @@ A from-scratch Rust successor to Peek (`phw/peek`, deprecated upstream),
 built for GNOME Wayland-only sessions. GIF-only, 10/15/30 fps, quality
 50/80/100%.
 
+> Launcher extension: the repository root ships a GNOME Shell extension
+> that starts this app with **Ctrl+Shift+P** (see the root `README.md`).
+
 ## The one-window model
 
 There is exactly one window, and it IS the frame: move it by the header,

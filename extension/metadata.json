@@ -1,0 +1,9 @@
+{
+  "name": "Peek Recorder",
+  "description": "Launch the Peek GIF recorder with Ctrl+Shift+P.",
+  "uuid": "peek@Mehdi-Bahlaoui",
+  "shell-version": ["45", "46", "47", "48", "49", "50", "51"],
+  "version": 1,
+  "url": "https://github.com/Mehdi-Bahlaoui/peek",
+  "settings-schema": "org.gnome.shell.extensions.peek"
+}

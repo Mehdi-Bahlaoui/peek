@@ -44,6 +44,9 @@ pub struct PeekWindow {
     stop: gtk4::Button,
     view: gtk4::DrawingArea,
     frame_on: Rc<Cell<bool>>,
+    /// Last state applied, so `present` can respect the hidden-while-
+    /// encoding behavior.
+    state: Cell<UiState>,
 }
 
 pub fn show_window(
@@ -222,6 +225,7 @@ pub fn show_window(
         stop,
         view,
         frame_on,
+        state: Cell::new(UiState::Selecting),
     }
 }
 
@@ -257,10 +261,20 @@ fn monitor_size(window: &gtk4::ApplicationWindow) -> Option<(u32, u32)> {
 
 impl PeekWindow {
     pub fn apply_snapshot(&self, snap: &UiSnapshot) {
+        self.state.set(snap.state);
         let recording = matches!(snap.state, UiState::Recording);
         // Marker off while recording: the frame must not end up in the GIF.
         self.frame_on.set(!recording);
         self.view.queue_draw();
+        // Stop pressed: hide the window while the GIF encodes so it
+        // cannot be closed by accident and does not distract. It comes
+        // back only when encoding fails (retry is still possible); on
+        // success the app quits by itself.
+        match snap.state {
+            UiState::Encoding => self.window.set_visible(false),
+            UiState::Failed => self.window.set_visible(true),
+            _ => {}
+        }
         // Click-through everywhere except the header strip, so the user
         // can interact with the recorded apps while Stop stays clickable.
         // Out-of-surface region parts are ignored by compositors.
@@ -290,6 +304,15 @@ impl PeekWindow {
                 self.record.set_sensitive(false);
                 self.stop.set_sensitive(false);
             }
+        }
+    }
+
+    /// Bring the window back to the front (the launcher shortcut was
+    /// pressed while Peek is already running). No-op while encoding:
+    /// the window is deliberately hidden then.
+    pub fn present(&self) {
+        if !matches!(self.state.get(), UiState::Encoding) {
+            self.window.present();
         }
     }
 }
